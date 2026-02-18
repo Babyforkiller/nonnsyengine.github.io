@@ -2,7 +2,10 @@
 <html lang="ru" data-theme="dark">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="theme-color" content="#0c0c0c">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="description" content="NONNSY ENGINE — мощный Telegram-бот для автоматизации рассылок. До 3 аккаунтов, умная защита, автоответчик, гибкие настройки. Пробный час бесплатно!">
     <meta name="keywords" content="telegram бот, рассылка telegram, автоматизация telegram, массовая рассылка, telegram mailing bot">
     <meta name="author" content="NONNSY ENGINE">
@@ -59,6 +62,7 @@
             </div>
         </div>
     </nav>
+    <div class="nav-overlay" id="navOverlay" aria-hidden="true"></div>
 
     <!-- HERO СЕКЦИЯ -->
     <section class="hero" id="hero">
@@ -234,12 +238,22 @@
         </div>
     </section>
 
-    <!-- ТАРИФЫ -->
+    <!-- ТАРИФЫ (преимущества общие, сроки — только срок и цена) -->
     <section class="tariffs" id="tariffs">
         <div class="container">
             <div class="section-header">
                 <h2 class="section-title">Тарифы</h2>
-                <p class="section-subtitle">Выберите подходящий план для ваших задач</p>
+                <p class="section-subtitle">Один набор возможностей — выберите срок, чем дольше, тем выгоднее</p>
+            </div>
+            <div class="tariffs-includes">
+                <h3 class="tariffs-includes-title">Что входит во все тарифы</h3>
+                <ul class="tariffs-includes-list">
+                    <li><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>До 3 аккаунтов</li>
+                    <li><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>Неограниченные рассылки</li>
+                    <li><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>Автоответчик</li>
+                    <li><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>Гибкое расписание</li>
+                    <li><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>Приоритетная поддержка</li>
+                </ul>
             </div>
             <div class="tariffs-grid">
                 <div class="tariff-card">
@@ -251,14 +265,6 @@
                         </div>
                     </div>
                     <a href="https://t.me/Nonnsy_bot" class="btn btn-outline btn-block tariff-cta" target="_blank" rel="noopener">Выбрать</a>
-                    <div class="tariff-desc">
-                        <ul class="tariff-features">
-                            <li><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>До 3 аккаунтов</li>
-                            <li><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>Неограниченные рассылки</li>
-                            <li><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>Автоответчик</li>
-                            <li><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>Гибкое расписание</li>
-                        </ul>
-                    </div>
                 </div>
                 <div class="tariff-card">
                     <div class="tariff-header">
@@ -269,15 +275,6 @@
                         </div>
                     </div>
                     <a href="https://t.me/Nonnsy_bot" class="btn btn-outline btn-block tariff-cta" target="_blank" rel="noopener">Выбрать</a>
-                    <div class="tariff-desc">
-                        <ul class="tariff-features">
-                            <li><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>До 3 аккаунтов</li>
-                            <li><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>Неограниченные рассылки</li>
-                            <li><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>Автоответчик</li>
-                            <li><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>Гибкое расписание</li>
-                            <li><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>Приоритетная поддержка</li>
-                        </ul>
-                    </div>
                 </div>
                 <div class="tariff-card tariff-card--popular">
                     <div class="tariff-badge">Выгодно</div>
@@ -289,35 +286,16 @@
                         </div>
                     </div>
                     <a href="https://t.me/Nonnsy_bot" class="btn btn-primary btn-block tariff-cta" target="_blank" rel="noopener">Выбрать</a>
-                    <div class="tariff-desc tariff-desc--shimmer">
-                        <ul class="tariff-features">
-                            <li><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>До 3 аккаунтов</li>
-                            <li><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>Неограниченные рассылки</li>
-                            <li><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>Автоответчик</li>
-                            <li><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>Гибкое расписание</li>
-                            <li><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>Приоритетная поддержка</li>
-                        </ul>
-                    </div>
                 </div>
                 <div class="tariff-card">
                     <div class="tariff-header">
-                        <h3 class="tariff-name">3 Месяца</h3>
+                        <h3 class="tariff-name">3 месяца</h3>
                         <div class="tariff-price">
                             <span class="price-value">750</span>
                             <span class="price-currency">₽</span>
                         </div>
                     </div>
                     <a href="https://t.me/Nonnsy_bot" class="btn btn-outline btn-block tariff-cta" target="_blank" rel="noopener">Выбрать</a>
-                    <div class="tariff-desc">
-                        <ul class="tariff-features">
-                            <li><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>До 3 аккаунтов</li>
-                            <li><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>Неограниченные рассылки</li>
-                            <li><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>Автоответчик</li>
-                            <li><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>Гибкое расписание</li>
-                            <li><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>Приоритетная поддержка</li>
-                            <li><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>Скидка 17%</li>
-                        </ul>
-                    </div>
                 </div>
             </div>
         </div>

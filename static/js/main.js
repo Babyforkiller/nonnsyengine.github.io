@@ -39,20 +39,56 @@
     const navbar = document.getElementById('navbar');
     const burger = document.getElementById('burger');
     const navLinks = document.getElementById('navLinks');
+    const navOverlay = document.getElementById('navOverlay');
 
-    // Mobile menu toggle
+    function openMenu() {
+        if (!navLinks || !burger) return;
+        navLinks.classList.add('active');
+        burger.classList.add('active');
+        if (navOverlay) {
+            navOverlay.classList.add('active');
+            navOverlay.setAttribute('aria-hidden', 'false');
+        }
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeMenu() {
+        if (!navLinks || !burger) return;
+        navLinks.classList.remove('active');
+        burger.classList.remove('active');
+        if (navOverlay) {
+            navOverlay.classList.remove('active');
+            navOverlay.setAttribute('aria-hidden', 'true');
+        }
+        document.body.style.overflow = '';
+    }
+
+    // Mobile menu: бургер открывает/закрывает выдвижную панель
     if (burger && navLinks) {
-        burger.addEventListener('click', () => {
-            navLinks.classList.toggle('active');
-            burger.classList.toggle('active');
+        burger.addEventListener('click', function(e) {
+            e.stopPropagation();
+            if (navLinks.classList.contains('active')) {
+                closeMenu();
+            } else {
+                openMenu();
+            }
         });
 
-        // Close menu when clicking on a link
+        // Закрытие по клику на оверлей
+        if (navOverlay) {
+            navOverlay.addEventListener('click', closeMenu);
+        }
+
+        // Закрытие по клику на ссылку
         navLinks.querySelectorAll('a').forEach(link => {
-            link.addEventListener('click', () => {
-                navLinks.classList.remove('active');
-                burger.classList.remove('active');
-            });
+            link.addEventListener('click', closeMenu);
+        });
+
+        // Закрытие по Escape
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && navLinks.classList.contains('active')) {
+                closeMenu();
+            }
         });
     }
 
