@@ -273,6 +273,35 @@
         });
     }
 
+    // ---------- БОКОВОЙ ИНДИКАТОР ПРОКРУТКИ ----------
+    const scrollIndicator = document.getElementById('scrollIndicator');
+    const scrollProgress = document.getElementById('scrollProgress');
+    const scrollIcons = document.querySelectorAll('.scroll-icon');
+    
+    const updateScrollIndicator = () => {
+        if (!scrollIndicator || !scrollProgress) return;
+        
+        const windowHeight = window.innerHeight;
+        const documentHeight = document.documentElement.scrollHeight;
+        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        const scrollableHeight = documentHeight - windowHeight;
+        const scrollPercent = scrollableHeight > 0 ? (scrollTop / scrollableHeight) * 100 : 0;
+        
+        // Обновляем прогресс-бар
+        scrollProgress.style.height = `${scrollPercent}%`;
+        
+        // Активируем иконки в зависимости от позиции скролла
+        const iconCount = scrollIcons.length;
+        scrollIcons.forEach((icon, index) => {
+            const iconThreshold = (index + 1) / iconCount;
+            if (scrollPercent / 100 >= iconThreshold - 0.1) {
+                icon.classList.add('active');
+            } else {
+                icon.classList.remove('active');
+            }
+        });
+    };
+
     // ---------- PERFORMANCE OPTIMIZATION (улучшенная) ----------
     // Debounce для scroll events
     let scrollTimeout;
@@ -282,6 +311,7 @@
         }
         scrollTimeout = requestAnimationFrame(() => {
             updateActiveSection();
+            updateScrollIndicator();
             // Обновление тени навбара
             if (window.pageYOffset > 100) {
                 if (navbar) navbar.style.boxShadow = '0 4px 20px rgba(0, 0, 0, 0.3)';
@@ -292,6 +322,9 @@
     };
 
     window.addEventListener('scroll', handleScroll, { passive: true });
+    
+    // Инициализация индикатора при загрузке
+    updateScrollIndicator();
     
     // Предзагрузка критических ресурсов
     if ('requestIdleCallback' in window) {
