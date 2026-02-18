@@ -29,6 +29,10 @@
     --color-red-light: #F87171;
     --color-red-soft: rgba(220, 38, 38, 0.15);
     --color-red-glow: rgba(220, 38, 38, 0.25);
+    --color-red-accent: #FF4444;
+    --color-red-deep: #C41E1E;
+    --color-red-pale: rgba(255, 68, 68, 0.08);
+    --color-red-warm: rgba(229, 72, 72, 0.12);
 
     /* Layout surfaces */
     --page-bg: #0c0c0c;
@@ -90,7 +94,7 @@ html {
     -webkit-tap-highlight-color: transparent;
 }
 
-@media (max-width: 1000px) {
+@media (max-width: 768px) {
     html {
         scroll-padding-top: 70px;
     }
@@ -107,7 +111,7 @@ body {
     -webkit-overflow-scrolling: touch;
 }
 
-/* Единый фон с мягкими красными переливами — без видимых границ между секциями */
+/* Единый фон с мягкими красными переливами и декоративными элементами */
 body::before {
     content: "";
     position: fixed;
@@ -117,11 +121,76 @@ body::before {
     bottom: 0;
     z-index: -2;
     background:
-        radial-gradient(ellipse 120% 80% at 50% -20%, rgba(220, 38, 38, 0.12) 0%, transparent 50%),
-        radial-gradient(ellipse 90% 60% at 80% 50%, rgba(220, 38, 38, 0.035) 0%, transparent 60%),
-        radial-gradient(ellipse 80% 90% at 20% 80%, rgba(220, 38, 38, 0.03) 0%, transparent 60%),
+        radial-gradient(ellipse 120% 80% at 50% -20%, var(--color-red-warm) 0%, transparent 50%),
+        radial-gradient(ellipse 90% 60% at 80% 50%, var(--color-red-pale) 0%, transparent 60%),
+        radial-gradient(ellipse 80% 90% at 20% 80%, var(--color-red-pale) 0%, transparent 60%),
         linear-gradient(180deg, #0c0c0c 0%, #0a0a0a 30%, #0c0c0c 70%, #080808 100%);
     pointer-events: none;
+}
+
+/* Декоративные элементы на фоне (профессионально и ненавязчиво) - тонкие узоры без видимых переходов */
+body::after {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: -1;
+    background-image: 
+        /* Тонкие геометрические узоры - очень прозрачные */
+        repeating-linear-gradient(
+            45deg,
+            transparent,
+            transparent 100px,
+            rgba(220, 38, 38, 0.008) 100px,
+            rgba(220, 38, 38, 0.008) 101px
+        ),
+        repeating-linear-gradient(
+            -45deg,
+            transparent,
+            transparent 120px,
+            rgba(229, 72, 72, 0.006) 120px,
+            rgba(229, 72, 72, 0.006) 121px
+        ),
+        /* Мягкие радиальные градиенты */
+        radial-gradient(circle 300px at 8% 12%, rgba(255, 68, 68, 0.02) 0%, transparent 50%),
+        radial-gradient(circle 250px at 92% 58%, rgba(229, 72, 72, 0.015) 0%, transparent 50%),
+        radial-gradient(circle 200px at 48% 88%, rgba(220, 38, 38, 0.012) 0%, transparent 50%),
+        radial-gradient(circle 180px at 22% 68%, rgba(196, 30, 30, 0.01) 0%, transparent 50%),
+        radial-gradient(circle 150px at 78% 22%, rgba(255, 68, 68, 0.01) 0%, transparent 50%);
+    pointer-events: none;
+    opacity: 0.4;
+    mix-blend-mode: overlay;
+    animation: subtlePulse 25s ease-in-out infinite;
+    will-change: opacity;
+}
+
+@keyframes subtlePulse {
+    0%, 100% { opacity: 0.35; }
+    50% { opacity: 0.45; }
+}
+
+html[data-theme="light"] body::after {
+    opacity: 0.25;
+    background-image: 
+        repeating-linear-gradient(
+            45deg,
+            transparent,
+            transparent 100px,
+            rgba(220, 38, 38, 0.004) 100px,
+            rgba(220, 38, 38, 0.004) 101px
+        ),
+        repeating-linear-gradient(
+            -45deg,
+            transparent,
+            transparent 120px,
+            rgba(229, 72, 72, 0.003) 120px,
+            rgba(229, 72, 72, 0.003) 121px
+        ),
+        radial-gradient(circle 300px at 8% 12%, rgba(255, 68, 68, 0.01) 0%, transparent 50%),
+        radial-gradient(circle 250px at 92% 58%, rgba(229, 72, 72, 0.008) 0%, transparent 50%),
+        radial-gradient(circle 200px at 48% 88%, rgba(220, 38, 38, 0.006) 0%, transparent 50%);
 }
 
 /* Светлая тема (переключатель) */
@@ -139,6 +208,10 @@ html[data-theme="light"] {
     --color-red-light: #EF4444;
     --color-red-soft: rgba(220, 38, 38, 0.08);
     --color-red-glow: rgba(220, 38, 38, 0.12);
+    --color-red-accent: #FF4444;
+    --color-red-deep: #C41E1E;
+    --color-red-pale: rgba(255, 68, 68, 0.06);
+    --color-red-warm: rgba(229, 72, 72, 0.1);
 
     --page-bg: #FFFBF5;
     --navbar-bg: rgba(255, 251, 245, 0.88);
@@ -154,17 +227,62 @@ html[data-theme="light"] {
 
 html[data-theme="light"] body::before {
     background:
-        radial-gradient(ellipse 120% 80% at 50% -20%, rgba(220, 38, 38, 0.10) 0%, transparent 55%),
-        radial-gradient(ellipse 80% 50% at 80% 50%, rgba(220, 38, 38, 0.06) 0%, transparent 50%),
-        radial-gradient(ellipse 60% 80% at 20% 80%, rgba(220, 38, 38, 0.05) 0%, transparent 55%),
-        linear-gradient(180deg, #FFFBF5 0%, #FEFCFB 50%, #FFFBF5 100%);
+        radial-gradient(ellipse 120% 80% at 50% -20%, var(--color-red-warm) 0%, transparent 50%),
+        radial-gradient(ellipse 90% 60% at 80% 50%, var(--color-red-pale) 0%, transparent 60%),
+        radial-gradient(ellipse 80% 90% at 20% 80%, var(--color-red-pale) 0%, transparent 60%),
+        linear-gradient(180deg, #FFFBF5 0%, #FFF8F0 30%, #FFFBF5 70%, #FFFEF8 100%);
+}
+
+html[data-theme="light"] body::after {
+    background-image:
+        radial-gradient(circle 200px at 10% 15%, rgba(255, 68, 68, 0.015) 0%, transparent 60%),
+        radial-gradient(circle 180px at 90% 55%, rgba(229, 72, 72, 0.012) 0%, transparent 60%),
+        radial-gradient(circle 150px at 50% 85%, rgba(220, 38, 38, 0.01) 0%, transparent 60%);
+    opacity: 0.3;
+}
+
+/* Исправление светлой темы для карточек и элементов */
+html[data-theme="light"] .feature-card,
+html[data-theme="light"] .tariff-card,
+html[data-theme="light"] .security-card,
+html[data-theme="light"] .contact-card,
+html[data-theme="light"] .legal-card {
+    background: var(--color-cream-dark);
+    border-color: var(--color-gray-dark);
+}
+
+html[data-theme="light"] .nav-links a {
+    border-color: var(--color-gray-dark);
+}
+
+html[data-theme="light"] .nav-links a:hover,
+html[data-theme="light"] .nav-links a.active {
+    border-color: var(--color-red);
+    background: var(--color-red-pale);
+}
+
+html[data-theme="dark"] body::before {
+    background:
+        radial-gradient(ellipse 120% 80% at 50% -20%, var(--color-red-warm) 0%, transparent 50%),
+        radial-gradient(ellipse 90% 60% at 80% 50%, var(--color-red-pale) 0%, transparent 60%),
+        radial-gradient(ellipse 80% 90% at 20% 80%, var(--color-red-pale) 0%, transparent 60%),
+        linear-gradient(180deg, #0c0c0c 0%, #0a0a0a 30%, #0c0c0c 70%, #080808 100%);
 }
 
 /* Плавные переходы: у секций нет своего фона — виден общий фон */
 section {
     background: transparent;
     position: relative;
+    overflow: hidden;
 }
+
+/* Убираем все видимые переходы между секциями */
+section::before,
+section::after {
+    display: none !important;
+}
+
+/* Убрано: section::after с красным градиентом (создавал обрезанный огонёк при прокрутке) */
 
 .container {
     max-width: 1200px;
@@ -234,17 +352,34 @@ a:hover {
 }
 
 .btn-primary {
-    background: var(--color-red);
+    background: linear-gradient(135deg, var(--color-red) 0%, var(--color-red-accent) 100%);
     color: var(--color-white);
     border-color: var(--color-red);
-    box-shadow: 0 4px 14px rgba(220, 38, 38, 0.35);
+    box-shadow: 0 4px 14px var(--color-red-glow);
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-primary::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s ease;
+}
+
+.btn-primary:hover::before {
+    left: 100%;
 }
 
 .btn-primary:hover {
-    background: var(--color-red-dark);
-    border-color: var(--color-red-dark);
+    background: linear-gradient(135deg, var(--color-red-accent) 0%, var(--color-red) 100%);
+    border-color: var(--color-red-accent);
     transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(220, 38, 38, 0.4);
+    box-shadow: 0 6px 20px var(--color-red-glow);
     color: var(--color-white);
 }
 
@@ -329,16 +464,28 @@ a:hover {
 }
 
 .theme-toggle:hover {
-    border-color: var(--color-red);
+    border-color: var(--color-red-accent);
     box-shadow: 0 0 0 4px var(--color-red-soft);
+    background: var(--color-red-pale);
+    transform: scale(1.05);
+}
+
+.theme-toggle:active {
+    transform: scale(0.95);
 }
 
 .theme-toggle-icon {
     display: none;
 }
 
-html[data-theme="dark"] .theme-toggle-icon--sun { display: block; }
-html[data-theme="light"] .theme-toggle-icon--moon { display: block; }
+html[data-theme="dark"] .theme-toggle-icon--sun { 
+    display: block; 
+    color: var(--color-red-light);
+}
+html[data-theme="light"] .theme-toggle-icon--moon { 
+    display: block; 
+    color: var(--color-red);
+}
 
 .nav-wrapper {
     display: flex;
@@ -354,20 +501,40 @@ html[data-theme="light"] .theme-toggle-icon--moon { display: block; }
     margin-right: var(--spacing-md);
 }
 
+/* nav-links всегда скрыты в обычном виде, показываются только через бургер */
 .nav-wrapper > .nav-links {
-    flex: 1;
-    margin-left: var(--spacing-xl);
-    padding-left: var(--spacing-xl);
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: min(360px, 92vw);
+    max-width: 100%;
+    height: 100vh;
+    height: 100dvh;
+    margin: 0;
+    padding: 80px var(--spacing-md) var(--spacing-xl);
     border-left: 1px solid var(--color-gray-dark);
-    min-width: 0;
+    border-bottom: none;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 6px;
+    background: var(--nav-menu-bg);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    box-shadow: -8px 0 32px rgba(0, 0, 0, 0.4);
+    transform: translateX(100%);
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), visibility 0.3s;
+    visibility: hidden;
+    overflow-y: auto;
+    overflow-x: hidden;
+    z-index: 1001;
+    flex: none;
+    min-width: auto;
+    box-sizing: border-box;
 }
 
-@media (max-width: 1024px) {
-    .nav-wrapper > .nav-links {
-        border-left: none;
-        margin-left: 0;
-        padding-left: 0;
-    }
+.nav-wrapper > .nav-links.active {
+    transform: translateX(0);
+    visibility: visible;
 }
 
 .logo {
@@ -408,10 +575,19 @@ html[data-theme="light"] .theme-toggle-icon--moon { display: block; }
 
 .nav-links {
     display: flex;
-    align-items: center;
-    gap: clamp(0.75rem, 1.6vw, 2rem);
     list-style: none;
-    flex-wrap: nowrap;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 6px;
+    margin: 0;
+    padding: 0;
+}
+
+.nav-links li {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    min-height: 0;
 }
 
 .nav-links a {
@@ -419,34 +595,42 @@ html[data-theme="light"] .theme-toggle-icon--moon { display: block; }
     font-weight: 600;
     transition: all var(--transition-base);
     position: relative;
-    padding: 8px 4px;
-    white-space: nowrap;
+    display: block;
+    padding: 12px 16px;
+    min-height: 48px;
+    font-size: var(--font-size-base);
+    line-height: 1.45;
+    white-space: normal;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    word-break: break-word;
+    hyphens: auto;
+    border-radius: var(--radius-md);
+    border: 1px solid transparent;
+    background: transparent;
+    box-sizing: border-box;
+    text-decoration: none;
 }
 
 .nav-links a::after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 0;
-    height: 2px;
-    background: var(--color-red);
-    transition: width var(--transition-base);
-}
-
-.nav-links a:hover::after,
-.nav-links a.active::after {
-    width: 100%;
+    display: none;
 }
 
 .nav-links a:hover,
 .nav-links a.active {
     color: var(--color-red);
+    background: var(--color-red-pale);
+    border-color: var(--color-red);
+    box-shadow: none;
 }
 
-.nav-links a:hover {
-    color: var(--color-red);
+/* Аккуратная обводка без «кривых» краёв */
+.nav-links a:not(.nav-cta-mobile a):hover,
+.nav-links a:not(.nav-cta-mobile a).active {
+    border: 1px solid var(--color-red);
+    background: var(--color-red-pale);
 }
+
 
 .nav-actions {
     display: flex;
@@ -461,60 +645,111 @@ html[data-theme="light"] .theme-toggle-icon--moon { display: block; }
     white-space: nowrap;
 }
 
-/* Кнопка "Открыть бота" в меню скрыта на десктопе */
+/* Кнопка "Открыть бота" в меню (всегда в меню) - красивая, без изменений */
 .nav-cta-mobile {
-    display: none;
+    display: block;
+    margin-top: var(--spacing-lg);
+    padding-top: var(--spacing-lg);
+    border-top: 2px solid var(--color-red);
 }
 
-/* На десктопе показываем кнопку в nav-actions */
+.nav-cta-mobile .btn {
+    width: 100%;
+    margin: 0;
+    justify-content: center;
+    min-height: 48px;
+    /* Оставляем как есть - красивая красная кнопка без обводки */
+    border: none !important;
+    box-shadow: 0 4px 14px var(--color-red-glow) !important;
+}
+
+/* Убираем обводку у ссылок внутри nav-cta-mobile */
+.nav-cta-mobile a {
+    border: none !important;
+    background: linear-gradient(135deg, var(--color-red) 0%, var(--color-red-accent) 100%) !important;
+    color: var(--color-white) !important;
+    transition: all var(--transition-smooth) !important;
+}
+
+.nav-cta-mobile a:hover {
+    background: linear-gradient(135deg, var(--color-red-accent) 0%, var(--color-red) 100%) !important;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px var(--color-red-glow) !important;
+}
+
+/* На десктопе тоже показываем кнопку в nav-actions */
 .nav-cta-desktop {
     display: inline-flex;
 }
 
+/* Бургер всегда видим */
 .burger {
-    display: none;
+    display: flex !important;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    gap: 6px;
-    width: 44px;
-    height: 44px;
-    min-width: 44px;
-    min-height: 44px;
-    background: transparent;
-    border: 1px solid var(--color-gray-dark);
+    gap: 5px;
+    width: 48px;
+    height: 48px;
+    min-width: 48px;
+    min-height: 48px;
+    background: var(--color-cream-dark);
+    border: 2px solid var(--color-red);
     border-radius: var(--radius-md);
     cursor: pointer;
     padding: 0;
     z-index: 1002;
-    transition: all var(--transition-base);
+    transition: all var(--transition-smooth);
     -webkit-tap-highlight-color: transparent;
+    box-shadow: 0 2px 8px var(--color-red-pale);
 }
 
 .burger:hover {
-    border-color: var(--color-red);
+    border-color: var(--color-red-accent);
     background: var(--color-red-soft);
+    box-shadow: 0 4px 12px var(--color-red-glow);
+    transform: scale(1.05);
+}
+
+.burger:active {
+    transform: scale(0.95);
 }
 
 .burger span {
     display: block;
-    width: 22px;
-    height: 2px;
-    background: var(--color-black-soft);
-    border-radius: 2px;
-    transition: transform var(--transition-smooth), opacity var(--transition-base);
+    width: 24px;
+    height: 3px;
+    background: var(--color-red);
+    border-radius: 3px;
+    transition: transform var(--transition-smooth), opacity var(--transition-base), background var(--transition-base);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.burger:hover span {
+    background: var(--color-red-accent);
+}
+
+.burger.active {
+    background: var(--color-red);
+    border-color: var(--color-red-accent);
+    box-shadow: 0 4px 16px var(--color-red-glow);
+}
+
+.burger.active span {
+    background: var(--color-white);
 }
 
 .burger.active span:nth-child(1) {
-    transform: translateY(8px) rotate(45deg);
+    transform: translateY(9px) rotate(45deg);
 }
 
 .burger.active span:nth-child(2) {
     opacity: 0;
+    transform: translateX(-10px);
 }
 
 .burger.active span:nth-child(3) {
-    transform: translateY(-8px) rotate(-45deg);
+    transform: translateY(-9px) rotate(-45deg);
 }
 
 /* ---------- HERO SECTION ---------- */
@@ -528,6 +763,8 @@ html[data-theme="light"] .theme-toggle-icon--moon { display: block; }
     padding-bottom: var(--spacing-3xl);
     overflow: hidden;
 }
+
+/* Убрано: hero::after создавал видимый переход */
 
 .hero-background {
     position: absolute;
@@ -548,9 +785,17 @@ html[data-theme="light"] .theme-toggle-icon--moon { display: block; }
     opacity: 1;
 }
 
+/* Hero в светлой теме — фон и градиент подстраиваются */
+html[data-theme="light"] .hero-gradient {
+    background:
+        radial-gradient(ellipse 100% 60% at 50% 0%, rgba(220, 38, 38, 0.08) 0%, transparent 55%),
+        linear-gradient(180deg, rgba(255, 251, 245, 0.6) 0%, transparent 40%),
+        linear-gradient(135deg, #FFFBF5 0%, #FFF8F0 100%);
+}
+
 .hero-content {
     position: relative;
-    z-index: 1;
+    z-index: 2;
     text-align: center;
     max-width: 800px;
     margin: 0 auto;
@@ -636,23 +881,7 @@ section {
     scroll-margin-top: 100px; /* Отступ для якорных ссылок */
 }
 
-section::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 60px;
-    height: 4px;
-    background: linear-gradient(90deg, transparent, var(--color-red), transparent);
-    opacity: 0;
-    transition: opacity var(--transition-base);
-}
-
-section:target::before,
-section:hover::before {
-    opacity: 0.5;
-}
+/* Убрано: градиентные маски между секциями (создавали обрезанный эффект при прокрутке) */
 
 .section-header {
     text-align: center;
@@ -691,6 +920,15 @@ section:hover::before {
     max-width: 100%;
     box-sizing: border-box;
     overflow-wrap: break-word;
+}
+
+/* Плавные переходы для карточек */
+.feature-card,
+.tariff-card,
+.security-card,
+.contact-card,
+.legal-card {
+    transition: all var(--transition-smooth), border-color var(--transition-base), background-color var(--transition-base);
 }
 
 .feature-card .feature-description,
@@ -1294,11 +1532,32 @@ section:hover::before {
     background: var(--color-red-soft);
     border-radius: var(--radius-md);
     border-left: 4px solid var(--color-red);
+    transition: background-color var(--transition-base), border-color var(--transition-base);
 }
 
 .legal-notice p {
     color: var(--color-black-soft);
     margin: 0;
+}
+
+/* Баннер «Важно» в тёмной теме — тёмный фон */
+html[data-theme="dark"] .legal-notice {
+    background: rgba(25, 25, 25, 0.95);
+    border-left-color: var(--color-red);
+}
+
+html[data-theme="dark"] .legal-notice p {
+    color: var(--color-black-soft);
+}
+
+/* Баннер «Важно» в светлой теме */
+html[data-theme="light"] .legal-notice {
+    background: rgba(255, 248, 240, 0.98);
+    border-left-color: var(--color-red);
+}
+
+html[data-theme="light"] .legal-notice p {
+    color: var(--color-black-soft);
 }
 
 /* Страницы юридических документов (тёмная тема) */
@@ -1415,97 +1674,67 @@ section:hover::before {
 
 .footer-bottom {
     padding-top: var(--spacing-lg);
+    padding-bottom: var(--spacing-lg);
     border-top: 1px solid var(--color-gray-dark);
     text-align: center;
+    margin-top: var(--spacing-xl);
 }
 
 .footer-copyright {
     color: var(--color-gray-light);
     margin-bottom: var(--spacing-xs);
+    padding-bottom: var(--spacing-xs);
 }
 
 .footer-notice {
     color: var(--color-gray);
     font-size: var(--font-size-sm);
+    padding-bottom: var(--spacing-xs);
+}
+
+/* Убираем налезание кнопок в футере */
+.footer {
+    padding-bottom: var(--spacing-2xl);
+    overflow: hidden;
+}
+
+.footer-list a {
+    display: inline-block;
+    transition: color var(--transition-base), transform var(--transition-base);
+}
+
+.footer-list a:hover {
+    color: var(--color-red-light);
+    transform: translateX(2px);
+}
+
+/* ---------- NAV OVERLAY (всегда активен) ---------- */
+.nav-overlay {
+    display: block;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.6);
+    z-index: 900;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+    backdrop-filter: blur(2px);
+    -webkit-backdrop-filter: blur(2px);
+}
+
+.nav-overlay.active {
+    opacity: 1;
+    pointer-events: auto;
 }
 
 /* ---------- RESPONSIVE DESIGN ---------- */
 
-/* Планшеты и мобильные: показываем бургер и выдвижное меню */
-@media (max-width: 1000px) {
-    /* Скрываем обычные ссылки навигации */
-    .nav-wrapper > .nav-links {
-        position: fixed;
-        top: 0;
-        right: 0;
-        width: min(320px, 85vw);
-        height: 100vh;
-        height: 100dvh;
-        margin: 0;
-        padding: 80px var(--spacing-lg) var(--spacing-xl);
-        border-left: 1px solid var(--color-gray-dark);
-        border-bottom: none;
-        flex-direction: column;
-        align-items: stretch;
-        gap: 0;
-        background: var(--nav-menu-bg);
-        backdrop-filter: blur(16px);
-        -webkit-backdrop-filter: blur(16px);
-        box-shadow: -8px 0 32px rgba(0, 0, 0, 0.4);
-        transform: translateX(100%);
-        transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), visibility 0.3s;
-        visibility: hidden;
-        overflow-y: auto;
-        z-index: 1001;
-    }
-    
-    .nav-wrapper > .nav-links.active {
-        transform: translateX(0);
-        visibility: visible;
-    }
-    
-    .nav-links a {
-        padding: var(--spacing-md) 0;
-        font-size: var(--font-size-lg);
-        white-space: normal;
-        border-bottom: 1px solid var(--color-gray-dark);
-    }
-    
-    .nav-links a::after {
-        display: none;
-    }
-    
-    /* Кнопка "Открыть бота" в меню (мобильная версия) */
-    .nav-cta-mobile {
-        display: block;
-        margin-top: var(--spacing-lg);
-        padding-top: var(--spacing-lg);
-        border-top: 2px solid var(--color-red);
-    }
-    
-    .nav-cta-mobile .btn {
-        width: 100%;
-        margin: 0;
-        justify-content: center;
-        min-height: 48px;
-    }
-    
-    /* Скрываем кнопку "Открыть бота" в nav-actions на мобильных */
-    .nav-cta-desktop {
-        display: none !important;
-    }
-    
-    /* Показываем бургер */
-    .burger {
-        display: flex !important;
-    }
-    
-    /* Компактная шапка: только лого + тема + бургер */
+/* Адаптация для мобильных устройств */
+@media (max-width: 768px) {
     .nav-actions {
         gap: var(--spacing-sm);
     }
     
-    /* Кнопки в навигации на мобильных */
     .nav-actions .btn {
         font-size: var(--font-size-sm);
         padding: 8px 12px;
@@ -1513,34 +1742,16 @@ section:hover::before {
         flex-shrink: 1;
     }
     
-    /* Мобильное меню для юридических страниц - показываем только на мобильных */
-    .legal-document ~ .nav-links {
-        position: fixed;
-        top: 0;
-        right: 0;
-        width: min(320px, 85vw);
-        height: 100vh;
-        height: 100dvh;
-        margin: 0;
-        padding: 80px var(--spacing-lg) var(--spacing-xl);
-        border-left: 1px solid var(--color-gray-dark);
-        flex-direction: column;
-        align-items: stretch;
-        gap: 0;
-        background: var(--nav-menu-bg);
-        backdrop-filter: blur(16px);
-        -webkit-backdrop-filter: blur(16px);
-        box-shadow: -8px 0 32px rgba(0, 0, 0, 0.4);
-        transform: translateX(100%);
-        transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), visibility 0.3s;
-        visibility: hidden;
-        overflow-y: auto;
-        z-index: 1001;
+    .burger {
+        width: 44px;
+        height: 44px;
+        min-width: 44px;
+        min-height: 44px;
     }
     
-    .legal-document ~ .nav-links.active {
-        transform: translateX(0);
-        visibility: visible;
+    .burger span {
+        width: 20px;
+        height: 2.5px;
     }
     
     /* Уменьшаем padding на мобильных для юридических документов */

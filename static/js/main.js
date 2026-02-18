@@ -32,20 +32,30 @@
     const initThemeToggle = () => {
         const toggle = document.getElementById('themeToggle');
         if (toggle) {
-            toggle.addEventListener('click', (e) => {
+            // Удаляем старые обработчики если есть
+            const newToggle = toggle.cloneNode(true);
+            toggle.parentNode.replaceChild(newToggle, toggle);
+            
+            newToggle.addEventListener('click', (e) => {
                 e.preventDefault();
                 e.stopPropagation();
                 const current = root.getAttribute('data-theme') || 'dark';
-                applyTheme(current === 'dark' ? 'light' : 'dark');
+                const nextTheme = current === 'dark' ? 'light' : 'dark';
+                applyTheme(nextTheme);
+                console.log('Theme switched to:', nextTheme);
             });
         }
     };
     
     // Инициализируем сразу и после загрузки DOM
-    initThemeToggle();
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', initThemeToggle);
+    } else {
+        initThemeToggle();
     }
+    
+    // Также пробуем инициализировать через небольшой таймаут (на случай если элемент появится позже)
+    setTimeout(initThemeToggle, 100);
 
     // ---------- NAVIGATION ----------
     const navbar = document.getElementById('navbar');
