@@ -70,7 +70,7 @@
         lastScroll = currentScroll;
     });
 
-    // Smooth scroll for anchor links
+    // Smooth scroll for anchor links с улучшенной плавностью
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         anchor.addEventListener('click', function(e) {
             const href = this.getAttribute('href');
@@ -86,44 +86,59 @@
             const target = document.querySelector(href);
             if (target) {
                 e.preventDefault();
-                const offsetTop = target.offsetTop - 80;
+                const navbarHeight = navbar ? navbar.offsetHeight : 80;
+                const offsetTop = target.offsetTop - navbarHeight;
+                
+                // Плавный скролл с easing
                 window.scrollTo({
                     top: offsetTop,
                     behavior: 'smooth'
+                });
+                
+                // Обновляем активную ссылку сразу
+                document.querySelectorAll('.nav-links a').forEach(link => {
+                    link.classList.remove('active');
+                    if (link.getAttribute('href') === href) {
+                        link.classList.add('active');
+                    }
                 });
             }
         });
     });
 
-    // ---------- SCROLL ANIMATIONS ----------
+    // ---------- SCROLL ANIMATIONS (улучшенные) ----------
     const observerOptions = {
-        threshold: 0.1,
-        rootMargin: '0px 0px -50px 0px'
+        threshold: 0.15,
+        rootMargin: '0px 0px -80px 0px'
     };
 
     const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
+        entries.forEach((entry, index) => {
             if (entry.isIntersecting) {
-                entry.target.style.opacity = '1';
-                entry.target.style.transform = 'translateY(0)';
+                // Задержка для последовательного появления
+                setTimeout(() => {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                    entry.target.classList.add('animate-in');
+                }, index * 50); // Небольшая задержка для эффекта каскада
             }
         });
     }, observerOptions);
 
-    // Observe all cards and sections
+    // Observe all cards and sections с улучшенными анимациями
     document.querySelectorAll('.feature-card, .howto-step, .tariff-card, .security-card, .contact-card, .legal-card').forEach(el => {
         el.style.opacity = '0';
-        el.style.transform = 'translateY(30px)';
-        el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+        el.style.transform = 'translateY(40px)';
+        el.style.transition = 'opacity 0.7s cubic-bezier(0.4, 0, 0.2, 1), transform 0.7s cubic-bezier(0.4, 0, 0.2, 1)';
         observer.observe(el);
     });
 
-    // ---------- SMOOTH PAGE TRANSITIONS ----------
-    const sections = document.querySelectorAll('section');
+    // ---------- SMOOTH PAGE TRANSITIONS (улучшенные) ----------
+    const sections = document.querySelectorAll('section[id]');
     let currentSection = '';
 
     const updateActiveSection = () => {
-        const scrollPosition = window.pageYOffset + 100;
+        const scrollPosition = window.pageYOffset + 150; // Увеличенный offset для лучшего определения
 
         sections.forEach(section => {
             const sectionTop = section.offsetTop;
@@ -134,10 +149,11 @@
                 if (currentSection !== sectionId) {
                     currentSection = sectionId;
                     
-                    // Update active nav link
+                    // Плавное обновление активной ссылки
                     document.querySelectorAll('.nav-links a').forEach(link => {
                         link.classList.remove('active');
-                        if (link.getAttribute('href') === `#${sectionId}`) {
+                        const href = link.getAttribute('href');
+                        if (href === `#${sectionId}`) {
                             link.classList.add('active');
                         }
                     });
@@ -146,17 +162,34 @@
         });
     };
 
-    window.addEventListener('scroll', updateActiveSection);
+    // Throttled scroll для производительности
+    let scrollTimeout;
+    window.addEventListener('scroll', () => {
+        if (scrollTimeout) {
+            cancelAnimationFrame(scrollTimeout);
+        }
+        scrollTimeout = requestAnimationFrame(updateActiveSection);
+    }, { passive: true });
+    
     updateActiveSection();
 
-    // ---------- BUTTON HOVER EFFECTS ----------
+    // ---------- BUTTON HOVER EFFECTS (улучшенные) ----------
     document.querySelectorAll('.btn').forEach(btn => {
         btn.addEventListener('mouseenter', function() {
-            this.style.transform = 'translateY(-2px)';
+            this.style.transform = 'translateY(-3px) scale(1.02)';
+            this.style.transition = 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)';
         });
         
         btn.addEventListener('mouseleave', function() {
-            this.style.transform = 'translateY(0)';
+            this.style.transform = 'translateY(0) scale(1)';
+        });
+        
+        btn.addEventListener('mousedown', function() {
+            this.style.transform = 'translateY(-1px) scale(0.98)';
+        });
+        
+        btn.addEventListener('mouseup', function() {
+            this.style.transform = 'translateY(-3px) scale(1.02)';
         });
     });
 
@@ -204,20 +237,38 @@
         });
     }
 
-    // ---------- PERFORMANCE OPTIMIZATION ----------
-    // Throttle scroll events
-    let ticking = false;
-    const onScroll = () => {
-        if (!ticking) {
-            window.requestAnimationFrame(() => {
-                updateActiveSection();
-                ticking = false;
-            });
-            ticking = true;
+    // ---------- PERFORMANCE OPTIMIZATION (улучшенная) ----------
+    // Debounce для scroll events
+    let scrollTimeout;
+    const handleScroll = () => {
+        if (scrollTimeout) {
+            cancelAnimationFrame(scrollTimeout);
         }
+        scrollTimeout = requestAnimationFrame(() => {
+            updateActiveSection();
+            // Обновление тени навбара
+            if (window.pageYOffset > 100) {
+                if (navbar) navbar.style.boxShadow = '0 4px 20px rgba(0, 0, 0, 0.3)';
+            } else {
+                if (navbar) navbar.style.boxShadow = 'none';
+            }
+        });
     };
 
-    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    
+    // Предзагрузка критических ресурсов
+    if ('requestIdleCallback' in window) {
+        requestIdleCallback(() => {
+            // Предзагрузка изображений при простое
+            document.querySelectorAll('img[data-src]').forEach(img => {
+                if (img.dataset.src) {
+                    const imageLoader = new Image();
+                    imageLoader.src = img.dataset.src;
+                }
+            });
+        });
+    }
 
     // ---------- CONSOLE MESSAGE ----------
     console.log('%cNONNSY ENGINE', 'color: #DC2626; font-size: 24px; font-weight: bold;');
