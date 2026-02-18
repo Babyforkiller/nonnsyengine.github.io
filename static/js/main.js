@@ -67,6 +67,7 @@
         if (!navLinks || !burger) return;
         navLinks.classList.add('active');
         burger.classList.add('active');
+        document.body.classList.add('menu-open');
         if (navOverlay) {
             navOverlay.classList.add('active');
             navOverlay.setAttribute('aria-hidden', 'false');
@@ -78,6 +79,7 @@
         if (!navLinks || !burger) return;
         navLinks.classList.remove('active');
         burger.classList.remove('active');
+        document.body.classList.remove('menu-open');
         if (navOverlay) {
             navOverlay.classList.remove('active');
             navOverlay.setAttribute('aria-hidden', 'true');
@@ -150,31 +152,24 @@
         });
     });
 
-    // ---------- SCROLL ANIMATIONS (улучшенные) ----------
-    if ('IntersectionObserver' in window) {
-        const observerOptions = {
-            threshold: 0.15,
-            rootMargin: '0px 0px -80px 0px'
-        };
-
+    const enableScrollReveal = false;
+    if (enableScrollReveal && 'IntersectionObserver' in window) {
+        const observerOptions = { threshold: 0.15, rootMargin: '0px 0px -80px 0px' };
         const observer = new IntersectionObserver((entries) => {
             entries.forEach((entry, index) => {
                 if (entry.isIntersecting) {
-                    // Задержка для последовательного появления
                     setTimeout(() => {
                         entry.target.style.opacity = '1';
                         entry.target.style.transform = 'translateY(0)';
                         entry.target.classList.add('animate-in');
-                    }, index * 50); // Небольшая задержка для эффекта каскада
+                    }, index * 50);
                 }
             });
         }, observerOptions);
-
-        // Observe all cards and sections с улучшенными анимациями
         document.querySelectorAll('.feature-card, .howto-step, .tariff-card, .security-card, .contact-card, .legal-card').forEach(el => {
             el.style.opacity = '0';
-            el.style.transform = 'translateY(40px)';
-            el.style.transition = 'opacity 0.7s cubic-bezier(0.4, 0, 0.2, 1), transform 0.7s cubic-bezier(0.4, 0, 0.2, 1)';
+            el.style.transform = 'translateY(20px)';
+            el.style.transition = 'opacity 0.4s ease, transform 0.4s ease';
             observer.observe(el);
         });
     }
@@ -182,6 +177,94 @@
     // ---------- SMOOTH PAGE TRANSITIONS (улучшенные) ----------
     const sections = document.querySelectorAll('section[id]');
     let currentSection = '';
+
+    let emojiContainers = [];
+    let shapeContainers = [];
+    let emojiParticlesLayers = [[], []];
+    let shapeParticlesLayers = [[], []];
+    let currentPhase = 0;
+    const sectionThemes = {
+        hero:      { emojis: ['🚀','✨','🤖','⚙️'],          shapes: ['◆','◇','△','◯','✦'] },
+        features:  { emojis: ['⚙️','✨','🧩','🔧'],          shapes: ['◆','◯','△','✦','⬣'] },
+        howto:     { emojis: ['🧭','🪄','✅','👉'],          shapes: ['◆','◯','▢','✦'] },
+        tariffs:   { emojis: ['💳','💰','⭐','🏷️','₽'],      shapes: ['◆','◯','△','✦'] },
+        security:  { emojis: ['🔒','🛡️','✅','✨'],          shapes: ['◆','◯','⬣','✦'] },
+        contacts:  { emojis: ['💬','📨','📞','✨'],           shapes: ['◆','◯','△','✦'] },
+        legal:     { emojis: ['⚖️','📜','✅','✨'],          shapes: ['◆','◯','△','✦'] },
+        default:   { emojis: ['✨','⚙️','📨','🔒','🤖'],      shapes: ['◆','◇','△','◯','✦'] }
+    };
+    function createContainer(cls) {
+        const el = document.createElement('div');
+        el.className = cls;
+        document.body.appendChild(el);
+        return el;
+    }
+    function createParticles(container, count) {
+        const arr = [];
+        for (let i = 0; i < count; i++) {
+            const span = document.createElement('span');
+            span.className = 'particle';
+            container.appendChild(span);
+            arr.push(span);
+        }
+        return arr;
+    }
+    function initParticles() {
+        if (emojiContainers.length === 0) {
+            const a = createContainer('emoji-particles layer-a');
+            const b = createContainer('emoji-particles layer-b');
+            emojiContainers = [a, b];
+            emojiParticlesLayers[0] = createParticles(a, 6);
+            emojiParticlesLayers[1] = createParticles(b, 6);
+        }
+        if (shapeContainers.length === 0) {
+            const a = createContainer('shape-particles layer-a');
+            const b = createContainer('shape-particles layer-b');
+            shapeContainers = [a, b];
+            shapeParticlesLayers[0] = createParticles(a, 6);
+            shapeParticlesLayers[1] = createParticles(b, 6);
+        }
+    }
+    function positionParticles(particles, items, sizeMin, sizeMax) {
+        const vw = Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0);
+        const vh = Math.max(document.documentElement.clientHeight || 0, window.innerHeight || 0);
+        const marginX = 12; // проценты — держим вдали от краёв
+        const marginY = 14;
+        particles.forEach((p, i) => {
+            const item = items[i % items.length];
+            p.textContent = item;
+            const x = marginX + Math.random() * (100 - marginX * 2);
+            const y = marginY + Math.random() * (100 - marginY * 2);
+            const fs = sizeMin + Math.random() * (sizeMax - sizeMin);
+            const delay = Math.random() * 0.5 + (i % 4) * 0.05;
+            p.style.left = x + 'vw';
+            p.style.top = y + 'vh';
+            p.style.fontSize = fs + 'px';
+            p.style.transitionDelay = delay + 's';
+        });
+    }
+    function crossfadeToPhase(nextPhase) {
+        const prevPhase = currentPhase;
+        // Плавно показать новую фазу
+        emojiContainers[nextPhase].classList.add('visible');
+        shapeContainers[nextPhase].classList.add('visible');
+        // Небольшое перекрытие, затем скрываем старую
+        clearTimeout(crossfadeToPhase._hideTimer);
+        crossfadeToPhase._hideTimer = setTimeout(() => {
+            emojiContainers[prevPhase].classList.remove('visible');
+            shapeContainers[prevPhase].classList.remove('visible');
+        }, 600); // перекрытие ~0.6s
+        currentPhase = nextPhase;
+    }
+    function updateParticlesForSection(sectionId) {
+        const theme = sectionThemes[sectionId] || sectionThemes.default;
+        const nextPhase = currentPhase ^ 1;
+        // Позиционируем невидимую фазу заранее
+        positionParticles(emojiParticlesLayers[nextPhase], theme.emojis, 36, 80);
+        positionParticles(shapeParticlesLayers[nextPhase], theme.shapes, 64, 140);
+        crossfadeToPhase(nextPhase);
+    }
+    initParticles();
 
     const updateActiveSection = () => {
         const scrollPosition = window.pageYOffset + 150; // Увеличенный offset для лучшего определения
@@ -194,6 +277,7 @@
             if (scrollPosition >= sectionTop && scrollPosition < sectionTop + sectionHeight) {
                 if (currentSection !== sectionId) {
                     currentSection = sectionId;
+                    updateParticlesForSection(currentSection);
                     
                     // Плавное обновление активной ссылки
                     document.querySelectorAll('.nav-links a').forEach(link => {
