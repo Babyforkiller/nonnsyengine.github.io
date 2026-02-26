@@ -152,24 +152,21 @@
         });
     });
 
-    const enableScrollReveal = false;
+    const enableScrollReveal = true;
     if (enableScrollReveal && 'IntersectionObserver' in window) {
-        const observerOptions = { threshold: 0.15, rootMargin: '0px 0px -80px 0px' };
+        const observerOptions = { threshold: 0.1, rootMargin: '0px 0px -50px 0px' };
         const observer = new IntersectionObserver((entries) => {
             entries.forEach((entry, index) => {
                 if (entry.isIntersecting) {
-                    setTimeout(() => {
-                        entry.target.style.opacity = '1';
-                        entry.target.style.transform = 'translateY(0)';
-                        entry.target.classList.add('animate-in');
-                    }, index * 50);
+                    // Add a small delay based on index/order if possible, or just let CSS handle it
+                    entry.target.classList.add('animate-in');
+                    observer.unobserve(entry.target);
                 }
             });
         }, observerOptions);
-        document.querySelectorAll('.feature-card, .howto-step, .tariff-card, .security-card, .contact-card, .legal-card').forEach(el => {
-            el.style.opacity = '0';
-            el.style.transform = 'translateY(20px)';
-            el.style.transition = 'opacity 0.4s ease, transform 0.4s ease';
+        
+        document.querySelectorAll('.feature-card, .howto-step, .tariff-card, .security-card, .contact-card, .legal-card, .hero-content > *').forEach(el => {
+            el.classList.add('reveal-element');
             observer.observe(el);
         });
     }
@@ -179,91 +176,80 @@
     let currentSection = '';
 
     let emojiContainers = [];
-    let shapeContainers = [];
-    let emojiParticlesLayers = [[], []];
-    let shapeParticlesLayers = [[], []];
     let currentPhase = 0;
+    
+    // Тематические эмодзи для каждой секции
     const sectionThemes = {
-        hero:      { emojis: ['🚀','✨','🤖','⚙️'],          shapes: ['◆','◇','△','◯','✦'] },
-        features:  { emojis: ['⚙️','✨','🧩','🔧'],          shapes: ['◆','◯','△','✦','⬣'] },
-        howto:     { emojis: ['🧭','🪄','✅','👉'],          shapes: ['◆','◯','▢','✦'] },
-        tariffs:   { emojis: ['💳','💰','⭐','🏷️','₽'],      shapes: ['◆','◯','△','✦'] },
-        security:  { emojis: ['🔒','🛡️','✅','✨'],          shapes: ['◆','◯','⬣','✦'] },
-        contacts:  { emojis: ['💬','📨','📞','✨'],           shapes: ['◆','◯','△','✦'] },
-        legal:     { emojis: ['⚖️','📜','✅','✨'],          shapes: ['◆','◯','△','✦'] },
-        default:   { emojis: ['✨','⚙️','📨','🔒','🤖'],      shapes: ['◆','◇','△','◯','✦'] }
+        hero:      ['🚀','✨','🤖','🔥'],
+        features:  ['⚙️','💎','🧩','🔧'],
+        howto:     ['🧭','💡','✅','👉'],
+        tariffs:   ['💳','💰','⭐','💎'],
+        security:  ['🔒','🛡️','👁️‍🗨️','✨'],
+        contacts:  ['💬','📨','✈️','🤝'],
+        legal:     ['⚖️','📜','✒️','🏛️'],
+        default:   ['✨','🤖','�','�']
     };
+
     function createContainer(cls) {
         const el = document.createElement('div');
         el.className = cls;
         document.body.appendChild(el);
         return el;
     }
-    function createParticles(container, count) {
-        const arr = [];
-        for (let i = 0; i < count; i++) {
-            const span = document.createElement('span');
-            span.className = 'particle';
-            container.appendChild(span);
-            arr.push(span);
-        }
-        return arr;
+
+    function createParticle(container, char) {
+        const span = document.createElement('span');
+        span.className = 'particle';
+        span.textContent = char;
+        
+        // Random positioning and sizing
+        const size = 20 + Math.random() * 40; // 20-60px
+        const x = Math.random() * 90 + 5; // 5-95%
+        const y = Math.random() * 90 + 5; // 5-95%
+        const duration = 3 + Math.random() * 4; // 3-7s float duration
+        const delay = Math.random() * 2;
+        
+        span.style.left = `${x}%`;
+        span.style.top = `${y}%`;
+        span.style.fontSize = `${size}px`;
+        span.style.animationDuration = `${duration}s`;
+        span.style.animationDelay = `${delay}s`;
+        
+        container.appendChild(span);
+        return span;
     }
+
     function initParticles() {
+        // Create two layers for crossfading
         if (emojiContainers.length === 0) {
             const a = createContainer('emoji-particles layer-a');
             const b = createContainer('emoji-particles layer-b');
             emojiContainers = [a, b];
-            emojiParticlesLayers[0] = createParticles(a, 6);
-            emojiParticlesLayers[1] = createParticles(b, 6);
-        }
-        if (shapeContainers.length === 0) {
-            const a = createContainer('shape-particles layer-a');
-            const b = createContainer('shape-particles layer-b');
-            shapeContainers = [a, b];
-            shapeParticlesLayers[0] = createParticles(a, 6);
-            shapeParticlesLayers[1] = createParticles(b, 6);
         }
     }
-    function positionParticles(particles, items, sizeMin, sizeMax) {
-        const vw = Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0);
-        const vh = Math.max(document.documentElement.clientHeight || 0, window.innerHeight || 0);
-        const marginX = 12; // проценты — держим вдали от краёв
-        const marginY = 14;
-        particles.forEach((p, i) => {
-            const item = items[i % items.length];
-            p.textContent = item;
-            const x = marginX + Math.random() * (100 - marginX * 2);
-            const y = marginY + Math.random() * (100 - marginY * 2);
-            const fs = sizeMin + Math.random() * (sizeMax - sizeMin);
-            const delay = Math.random() * 0.5 + (i % 4) * 0.05;
-            p.style.left = x + 'vw';
-            p.style.top = y + 'vh';
-            p.style.fontSize = fs + 'px';
-            p.style.transitionDelay = delay + 's';
-        });
-    }
-    function crossfadeToPhase(nextPhase) {
-        const prevPhase = currentPhase;
-        // Плавно показать новую фазу
-        emojiContainers[nextPhase].classList.add('visible');
-        shapeContainers[nextPhase].classList.add('visible');
-        // Небольшое перекрытие, затем скрываем старую
-        clearTimeout(crossfadeToPhase._hideTimer);
-        crossfadeToPhase._hideTimer = setTimeout(() => {
-            emojiContainers[prevPhase].classList.remove('visible');
-            shapeContainers[prevPhase].classList.remove('visible');
-        }, 600); // перекрытие ~0.6s
+
+    function updateParticlesForSection(sectionId) {
+        const emojis = sectionThemes[sectionId] || sectionThemes.default;
+        const nextPhase = currentPhase ^ 1;
+        const activeContainer = emojiContainers[nextPhase];
+        const inactiveContainer = emojiContainers[currentPhase];
+
+        // Clear next container
+        activeContainer.innerHTML = '';
+        
+        // Populate next container with new emojis
+        const count = window.innerWidth < 768 ? 6 : 12; // Fewer on mobile
+        for (let i = 0; i < count; i++) {
+            createParticle(activeContainer, emojis[i % emojis.length]);
+        }
+
+        // Fade in next, fade out current
+        activeContainer.classList.add('visible');
+        inactiveContainer.classList.remove('visible');
+
         currentPhase = nextPhase;
     }
-    function updateParticlesForSection(sectionId) {
-        const theme = sectionThemes[sectionId] || sectionThemes.default;
-        const nextPhase = currentPhase ^ 1;
-        // Позиционируем невидимую фазу заранее
-        positionParticles(emojiParticlesLayers[nextPhase], theme.emojis, 36, 80);
-        positionParticles(shapeParticlesLayers[nextPhase], theme.shapes, 64, 140);
-        crossfadeToPhase(nextPhase);
-    }
+
     initParticles();
 
     const updateActiveSection = () => {
